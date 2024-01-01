@@ -1,0 +1,179 @@
+﻿@model TravelBlog.Models.ViewModel.BlogCreateViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<header>
+    <div class="site-brand text-center">
+        <div class="container">
+            <a href="index.html">
+                <h2>Travel And Share</h2>
+            </a>
+
+        </div>
+    </div>
+    <div class="header-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-8 col-xs-3 pos-s">
+                    <button class="menu-toggle">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </button>
+                    <nav class="navbar navbar-default">
+                        <div class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li class="menu-item active">
+                                    @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
+
+                                </li>
+                                
+
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-9 text-md-center">
+                    <div class="search-toggle">
+
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <ul class="social-icons-menu list-unstyled">
+                        <li>
+                            @if (ViewBag.LoggedInUser == null)
+                            {
+                                @Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "nav-link" })<i class="fa fa-facebook"></i>
+
+                            }
+                        </li>
+                        <li>
+                            @if (ViewBag.LoggedInUser != null)
+                            {
+                                @ViewBag.LoggedInUser.Name @ViewBag.LoggedInUser.Surname
+                                <a href="@Url.Action("Logout", "Login")">
+                                    &nbsp;<i class="fa fa-sign-out"></i> Logout
+                                </a>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-area">
+        <span class="close-search">
+            <i class="fa fa-close"></i>
+        </span>
+        <div class="display-table">
+            <div class="display-table-cell">
+                <form role="search" method="get" class="search-form" action="#">
+                    <input type="search" class="search-field" placeholder="Search..." name="s" required="required">
+                    <button type="submit" class="search-submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+<div style="justify-content:center;display:flex">
+    <div style="width:400px">
+        @using (Html.BeginForm("Create", "UserBlog", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <br />
+            <h2 class="text-center">Blog Oluştur</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Blog.title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Blog.title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Blog.title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content" class="control-label col-md-2">
+                    Content:
+                </label>
+                <div class="col-md-10">
+                    <p class="help-block">
+                        For rich text editing, check out
+                        <a href="https://summernote.org/" target="_blank" style="color: #007bff; text-decoration: underline; font-weight: bold;">Summernote</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Blog.content, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Blog.content, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Blog.content, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <!-- Diğer alanlar -->
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Blog.Image, "Image", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="Image" id="Image" accept=".jpg, .jpeg, .png" onchange="updateImagePath(this)" />
+                    <img id="previewImage" style="max-width: 200px; max-height: 200px; margin-top: 10px; display: none;" />
+                    @Html.ValidationMessageFor(model => model.Blog.Image, "", new { @class = "text-danger" })
+                    <input type="hidden" id="ImagePath" name="Blog.Image" />
+                </div>
+            </div>
+            <script>
+                function updateImagePath(input) {
+                    var file = input.files[0];
+                    var imagePathInput = document.getElementById("ImagePath");
+
+                    if (file) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            // Dosya yolu bilgisini gizli input elemanına ekle
+                            imagePathInput.value = e.target.result;
+                            document.getElementById("previewImage").src = e.target.result;
+                            document.getElementById("previewImage").style.display = "block";
+                        };
+
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Dosya seçilmediyse, dosya yolu bilgisini sıfırla
+                        imagePathInput.value = "";
+                        document.getElementById("previewImage").src = "";
+                        document.getElementById("previewImage").style.display = "none";
+                    }
+                }
+            </script>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SelectedCityId, "City", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SelectedCityId, Model.Cities, "Select a City", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SelectedCityId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        }
+
+
+    </div>
+
+
+
+</div>
+
+
+
+

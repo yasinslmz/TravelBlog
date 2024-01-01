@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPanel.cshtml";
+}
+
+<h2>Spam Blog List</h2>
+
+<p>Total Spam Blogs: @ViewBag.SpamBlogCount</p>
+
+<table class="table">
+    <tr>
+        <th>Title</th>
+        <th>Content</th>
+        <!-- Diğer sütunlar eklenebilir -->
+    </tr>
+
+    @foreach (var blog in Model)
+    {
+        <tr>
+            <td>@blog.title</td>
+            <td>@blog.content</td>
+            <!-- Diğer sütunlar eklenebilir -->
+        </tr>
+    }
+</table>

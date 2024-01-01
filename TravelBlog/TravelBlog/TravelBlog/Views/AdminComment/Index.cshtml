@@ -1,0 +1,36 @@
+﻿@model IEnumerable<TravelBlog.Models.BlogComments>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPanel.cshtml";
+}
+
+<h2>Comments</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Yorum</th>
+            <th>Onay Durumu</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@comment.User.userName</td>
+                <td>@comment.comment</td>
+                <td>@comment.IsApproved</td>
+                <td>
+                    @using (Html.BeginForm("ApproveComment", "AdminComment", new { id = comment.Id }))
+                    {
+                        @Html.CheckBox("isApproved", comment.IsApproved)
+                        <button class="btn btn-warning btn-sm" type="submit">Onayla</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,224 @@
+﻿@model TravelBlog.Models.ViewModel.BlogDetailViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!-- ========== Start Loading ========== -->
+
+<div class="loading">
+    <div class="loading-content">
+        <div class="inner-item"></div>
+        <div class="inner-item"></div>
+        <div class="inner-item"></div>
+        <div class="inner-item"></div>
+        <div class="inner-item"></div>
+    </div>
+</div>
+
+<!-- ========== End Loading ========== -->
+<!-- ========== Start Header ========== -->
+
+<header>
+    <div class="site-brand text-center">
+        <div class="container">
+            <a href="index.html">
+                <h2>FusionBlog</h2>
+            </a>
+            <p class="site-description">A Captivating Personal Blog Theme</p>
+        </div>
+    </div>
+    <div class="header-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-8 col-xs-3 pos-s">
+                    <button class="menu-toggle">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </button>
+                    <nav class="navbar navbar-default">
+                        <div class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li class="menu-item active">
+                                    @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })
+                                </li>
+                               
+                              
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-9 text-md-center">
+                    <div class="search-toggle">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <ul class="social-icons-menu list-unstyled">
+                        <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-area">
+        <span class="close-search">
+            <i class="fa fa-close"></i>
+        </span>
+        <div class="display-table">
+            <div class="display-table-cell">
+                <form role="search" method="get" class="search-form" action="#">
+                    <input type="search" class="search-field" placeholder="Search..." name="s" required="required">
+                    <button type="submit" class="search-submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ========== End Header ========== -->
+<!-- ========== Start Single Post ========== -->
+
+<section class="main-content post-single">
+    <div class="container">
+        <div style="display:flex;justify-content:center;">
+           
+                <div class="col-md-8 col-sm-12">
+
+                    <div class="row">
+                        <div class="post-item">
+                            <div class="post-thumbnail">
+                                <img class="img-responsive" style="width:100%" src="@Model.Blog.Image" alt="">
+                            </div>
+                            <div class="post-category">
+
+                            </div>
+                            <div class="post-header">
+                                <h3 class="post-title">@Model.Blog.title</h3>
+                                <span class="post-date">
+                                    <i class="fa fa-calendar"></i>
+                                    <a href="archive.html">@Model.Blog.postDate</a>
+                                </span>
+                                <span class="post-comments">
+                                    @if (ViewBag.LoggedInUser != null && ViewBag.LoggedInUser.Id == Model.Blog.UserId)
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", "BlogDetail", new { id = Model.Blog.Id }, new { @class = "nav-link" })
+
+
+                                    }
+                                    else if (ViewBag.LoggedInUser != null)
+                                    {
+                                        <a href="@Url.Action("Spam","BlogDetail", new { id = Model.Blog.Id })" class="comment-url" id="likeLink">Spam Bildir</a>
+
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("IncreaseLike","BlogDetail", new { id = Model.Blog.Id })" class="comment-url" id="likeLink"> <i class="fa fa-heart" id="likeIcon"></i></a>
+                                        <span id="likeCount">@Model.Blog.likeNumbers</span>
+                                    }
+                                </span>
+
+
+                            </div>
+                            <div class="post-content">
+                                <p>@Html.Raw(Model.Blog.content)</p>
+                            </div>
+                            <div class="post-footer">
+
+                                <div class="social-icons pull-right">
+                                    <ul class="social-icons-menu list-unstyled">
+                                        <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                        <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                        <li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                                        <li><a href="#" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+                                        <li><a href="#" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comments">
+                            <h3 class="comments-count">@ViewBag.CommentsList.Count Comments</h3>
+                            <ul class="list-unstyled comments-list">
+                                @foreach (var comment in ViewBag.CommentsList)
+                                {
+                                    var users = ViewData["Users"] as List<TravelBlog.Models.User>;
+                                    var user = users.FirstOrDefault(u => u.Id == comment.UserId);
+
+                                    <li class="comment">
+                                        <div class="comment-body">
+                                            <div class="comment-author">
+                                                <img alt="" src="@user.Image" class="avatar" height="64" width="64">
+                                                <cite class="fn">@((string)ViewBag.UserNames[comment.UserId])</cite>
+                                                <span class="says">says:</span>
+                                            </div>
+                                            <div class="comment-meta commentmetadata">
+                                                <a href="#">@comment.commentDate.ToString("MMMM dd, yyyy 'at' hh:mm tt")</a>
+                                                <a class="comment-edit-link" href="#">(Edit)</a>
+                                            </div>
+                                            <p>@comment.comment</p>
+
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+
+                            <div id="respond" class="comment-respond">
+                                <h3 class="comment-reply-title">Leave a Reply</h3>
+                                @using (Html.BeginForm("AddComment", "BlogDetail", new { id = Model.Blog.Id }, FormMethod.Post, new { @class = "comment-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <label class="label">Comment</label>
+                                    @Html.TextAreaFor(m => m.Comment.comment, new { placeholder = "Comment*", required = "required" })
+
+                                    <p class="form-submit">
+                                        <input name="submit" type="submit" id="submit" class="submit" value="Post Comment">
+                                    </p>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+        
+            
+        </div>
+    </div>
+</section>
+
+<!-- ========== Start Scroll To Top ========== -->
+
+<a href="#" class="scroll-top">
+    <span><i class="fa fa-arrow-up"></i></span>
+</a>
+
+<!-- ========== End Scroll To Top ========== -->
+<!-- ========== Start Footer ========== -->
+
+<div class="footer text-center">
+    <div class="footer-info">
+        <div class="container">
+            <p class="copyright">
+                copyright &copy; 2020 FusionBlog, All Right Reserved
+            </p>
+            <div class="textwidget custom-html-widget">
+                <ul class="social-icons-menu list-unstyled">
+                    <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
